@@ -10,7 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-#include <wx/treectrl.h>
+#include <wx/treelist.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
@@ -38,8 +38,11 @@ namespace MyTools
 	class PackPanel : public wxPanel
 	{
 	private:
+		void InitPackTreeListData();
+		void InitUI();
+
 	protected:
-		wxTreeCtrl *m_packListTreeCtrl;
+		wxTreeListCtrl *m_packTreeListCtrl;
 		wxTextCtrl *m_contentTextCtrl;
 		wxStaticText *m_codeStaticText;
 		wxTextCtrl *m_codeTextCtrl;

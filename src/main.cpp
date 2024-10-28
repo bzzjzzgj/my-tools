@@ -13,12 +13,12 @@ namespace MyTools
     };
 
   public:
-    Frame() : wxFrame(nullptr, wxID_ANY, "ÎÒµÄ - ¹¤¾ß")
+    Frame() : wxFrame(nullptr, wxID_ANY, "æˆ‘çš„ - å·¥å…·")
     {
       SetSize(1024, 800);
 
       auto menuFile = new wxMenu();
-      menuFile->Append(wxID_OPEN, "&´ò¿ª...\tCtrl-H", "Help string shown in status bar for this menu item");
+      menuFile->Append(wxID_OPEN, _("&æ‰“å¼€...\tCtrl-H"), "Help string shown in status bar for this menu item");
       menuFile->AppendSeparator();
 
       menuFile->Append(ID_Hello, "&Hello...\tCtrl-H", "Help string shown in status bar for this menu item");
@@ -36,26 +36,30 @@ namespace MyTools
       CreateStatusBar();
       SetStatusText("Welcome to wxWidgets!");
 
-
-
       // auto panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 
-      // auto button = new wxButton(panel, wxID_ANY, "µã»÷ÎÒ", wxPoint(10, 10), wxDefaultSize);
-      // button->Bind(wxEVT_BUTTON, [](wxCommandEvent &event) { 
-      //   wxLogMessage("°´Å¥±»µã»÷ÁË£¡"); 
+      // auto button = new wxButton(panel, wxID_ANY, "ç‚¹å‡»æˆ‘", wxPoint(10, 10), wxDefaultSize);
+      // button->Bind(wxEVT_BUTTON, [](wxCommandEvent &event) {
+      //   wxLogMessage("æŒ‰é’®è¢«ç‚¹å‡»äº†ï¼");
       // });
 
       // panel->AddChild(button);
 
+      wxBoxSizer *marginBoxSizer;
+      marginBoxSizer = new wxBoxSizer(wxVERTICAL);
+      marginBoxSizer->Add(new PackPanel(this), 1, wxEXPAND | wxALL, 20);
+      SetSizer(marginBoxSizer);
+      Layout();
+      
 
-      auto panel = new PackPanel(this);
 
-      menuBar->Bind(wxEVT_MENU, [&](wxCommandEvent &event) {
+      menuBar->Bind(wxEVT_MENU, [&](wxCommandEvent &event)
+      {
         if (event.GetId() == ID_Hello) wxLogMessage("Hello world from wxWidgets!");
         else if (event.GetId() == wxID_ABOUT) wxMessageBox("This is a wxWidgets Hello World example", "About Hello World", wxOK|wxICON_INFORMATION);
         else if (event.GetId() == wxID_EXIT) Close(true);
         else if (event.GetId() == wxID_OPEN){
-          // å®žçŽ°é€‰æ‹©æ–‡ä»¶åŠŸèƒ½
+
           wxFileDialog fileDialog(nullptr, "Choose a file", "", "", "All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
           if (fileDialog.ShowModal() == wxID_CANCEL) {
               return;
@@ -63,15 +67,16 @@ namespace MyTools
           wxString filePath = fileDialog.GetPath();
           wxLogMessage("Selected file: %s", filePath);
 
-          // wxMessageDialog dialog(nullptr, "ÎÄ¼þÒÑ³É¹¦´ò¿ª", "ÎÄ¼þ´ò¿ª", wxOK | wxICON_INFORMATION);
+          // wxMessageDialog dialog(nullptr, "æ–‡ä»¶å·²æˆåŠŸæ‰“å¼€", "æ–‡ä»¶æ‰“å¼€", wxOK | wxICON_INFORMATION);
           // dialog.ShowModal();
-          // ´ò¿ªÐÂ´°¿Ú
+          // æ‰“å¼€æ–°çª—å£
 
-          auto newFrame = new wxFrame(this, wxID_ANY, "ÐÂ´°¿Ú", wxDefaultPosition, wxSize(400, 300));
+          auto newFrame = new wxFrame(this, wxID_ANY, "æ–°çª—å£", wxDefaultPosition, wxSize(400, 300));
           newFrame->Show();
 
         }
-        else event.Skip(); });
+        else event.Skip(); 
+      });
     }
   };
 

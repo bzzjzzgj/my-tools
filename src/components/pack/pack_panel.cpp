@@ -14,25 +14,36 @@ namespace MyTools
 
 	PackPanel::PackPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxPanel(parent, id, pos, size, style, name)
 	{
+		InitUI();
+		InitPackTreeListData();
+	}
+
+	PackPanel::~PackPanel()
+	{
+	}
+
+	void PackPanel::InitUI()
+	{
 		wxFlexGridSizer *mainSizer;
 		mainSizer = new wxFlexGridSizer(1, 3, 0, 20);
-		mainSizer->AddGrowableCol(0, 20);
-		mainSizer->AddGrowableCol(1, 60);
+		mainSizer->AddGrowableCol(0, 40);
+		mainSizer->AddGrowableCol(1, 40);
 		mainSizer->AddGrowableCol(2, 20);
 		mainSizer->AddGrowableRow(0, 100);
 		mainSizer->SetFlexibleDirection(wxBOTH);
 		mainSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
 		wxStaticBoxSizer *packListSbSizer;
-		packListSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("×Ô¶¨ÒåÀñ°üÁÐ±í")), wxVERTICAL);
+		packListSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("è‡ªå®šä¹‰ç¤¼åŒ…åˆ—è¡¨")), wxVERTICAL);
 
-		m_packListTreeCtrl = new wxTreeCtrl(packListSbSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
-		packListSbSizer->Add(m_packListTreeCtrl, 1, wxALL | wxEXPAND, 5);
+		m_packTreeListCtrl = new wxTreeListCtrl(packListSbSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTL_DEFAULT_STYLE);
+
+		packListSbSizer->Add(m_packTreeListCtrl, 1, wxEXPAND | wxALL, 5);
 
 		mainSizer->Add(packListSbSizer, 1, wxEXPAND, 5);
 
 		wxStaticBoxSizer *contentSbSizer;
-		contentSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Àñ°üÄÚÈÝ")), wxVERTICAL);
+		contentSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("ç¤¼åŒ…å†…å®¹")), wxVERTICAL);
 
 		m_contentTextCtrl = new wxTextCtrl(contentSbSizer->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
 		contentSbSizer->Add(m_contentTextCtrl, 1, wxALL | wxEXPAND, 5);
@@ -43,12 +54,12 @@ namespace MyTools
 		basicBoxSizer = new wxBoxSizer(wxVERTICAL);
 
 		wxStaticBoxSizer *basicSbSizer;
-		basicSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("»ù´¡ÐÅÏ¢")), wxVERTICAL);
+		basicSbSizer = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("åŸºç¡€ä¿¡æ¯")), wxVERTICAL);
 
 		wxBoxSizer *codeBoxSizer;
 		codeBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
-		m_codeStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("±àÂë"), wxDefaultPosition, wxDefaultSize, 0);
+		m_codeStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("ç¼–ç "), wxDefaultPosition, wxDefaultSize, 0);
 		m_codeStaticText->Wrap(-1);
 		codeBoxSizer->Add(m_codeStaticText, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -60,7 +71,7 @@ namespace MyTools
 		wxBoxSizer *nameBoxSizer;
 		nameBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
-		m_nameStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("Ãû³Æ"), wxDefaultPosition, wxDefaultSize, 0);
+		m_nameStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("åç§°"), wxDefaultPosition, wxDefaultSize, 0);
 		m_nameStaticText->Wrap(-1);
 		nameBoxSizer->Add(m_nameStaticText, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -72,7 +83,7 @@ namespace MyTools
 		wxBoxSizer *iconBoxSizer;
 		iconBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
-		m_iconStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("Í¼±ê"), wxDefaultPosition, wxDefaultSize, 0);
+		m_iconStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("å›¾æ ‡"), wxDefaultPosition, wxDefaultSize, 0);
 		m_iconStaticText->Wrap(-1);
 		iconBoxSizer->Add(m_iconStaticText, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -84,7 +95,7 @@ namespace MyTools
 		wxBoxSizer *descBoxSizer;
 		descBoxSizer = new wxBoxSizer(wxHORIZONTAL);
 
-		m_descStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("ÃèÊö"), wxDefaultPosition, wxDefaultSize, 0);
+		m_descStaticText = new wxStaticText(basicSbSizer->GetStaticBox(), wxID_ANY, _("æè¿°"), wxDefaultPosition, wxDefaultSize, 0);
 		m_descStaticText->Wrap(-1);
 		descBoxSizer->Add(m_descStaticText, 0, wxALL, 5);
 
@@ -93,7 +104,7 @@ namespace MyTools
 
 		basicSbSizer->Add(descBoxSizer, 0, wxEXPAND, 5);
 
-		m_saveButton = new wxButton(basicSbSizer->GetStaticBox(), wxID_ANY, _("Éú³É/±£´æ"), wxDefaultPosition, wxDefaultSize, 0);
+		m_saveButton = new wxButton(basicSbSizer->GetStaticBox(), wxID_ANY, _("ç”Ÿæˆ/ä¿å­˜"), wxDefaultPosition, wxDefaultSize, 0);
 		basicSbSizer->Add(m_saveButton, 0, wxALL | wxALIGN_RIGHT, 5);
 
 		basicBoxSizer->Add(basicSbSizer, 1, wxEXPAND, 5);
@@ -104,8 +115,15 @@ namespace MyTools
 		this->Layout();
 	}
 
-	PackPanel::~PackPanel()
+	void PackPanel::InitPackTreeListData()
 	{
+		m_packTreeListCtrl->AppendColumn(_("å›¾æ ‡"), 10);
+		m_packTreeListCtrl->AppendColumn(_("åç§°"), 200);
+		m_packTreeListCtrl->AppendColumn(_("ç¼–ç "), 200);
+
+		wxTreeListItem root = m_packTreeListCtrl->AppendItem(m_packTreeListCtrl->GetRootItem(), "");
+		m_packTreeListCtrl->SetItemText(root, 1, _("èµ¤é‡‘äº¤å­"));
+		m_packTreeListCtrl->SetItemText(root, 2, _("cq_10001"));
 	}
 
 }
