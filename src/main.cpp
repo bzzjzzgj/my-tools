@@ -1,19 +1,24 @@
 #include <wx/wx.h>
 
-namespace My
+#include "components/pack/pack_panel.h"
+
+namespace MyTools
 {
   class Frame : public wxFrame
   {
     enum wxOwnedID
     {
-      ID_Hello = 2
+      ID_Hello = 2,
+      ID_OpenFile = 3,
     };
 
   public:
-    Frame() : wxFrame(nullptr, wxID_ANY, "Hello World")
+    Frame() : wxFrame(nullptr, wxID_ANY, "ÎÒµÄ - ¹¤¾ß")
     {
+      SetSize(1024, 800);
+
       auto menuFile = new wxMenu();
-      menuFile->Append(wxID_OPEN, "&æ‰“å¼€ \tCtrl-O", "æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶");
+      menuFile->Append(wxID_OPEN, "&´ò¿ª...\tCtrl-H", "Help string shown in status bar for this menu item");
       menuFile->AppendSeparator();
 
       menuFile->Append(ID_Hello, "&Hello...\tCtrl-H", "Help string shown in status bar for this menu item");
@@ -31,8 +36,21 @@ namespace My
       CreateStatusBar();
       SetStatusText("Welcome to wxWidgets!");
 
-      menuBar->Bind(wxEVT_MENU, [&](wxCommandEvent &event)
-      {
+
+
+      // auto panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+
+      // auto button = new wxButton(panel, wxID_ANY, "µã»÷ÎÒ", wxPoint(10, 10), wxDefaultSize);
+      // button->Bind(wxEVT_BUTTON, [](wxCommandEvent &event) { 
+      //   wxLogMessage("°´Å¥±»µã»÷ÁË£¡"); 
+      // });
+
+      // panel->AddChild(button);
+
+
+      auto panel = new PackPanel(this);
+
+      menuBar->Bind(wxEVT_MENU, [&](wxCommandEvent &event) {
         if (event.GetId() == ID_Hello) wxLogMessage("Hello world from wxWidgets!");
         else if (event.GetId() == wxID_ABOUT) wxMessageBox("This is a wxWidgets Hello World example", "About Hello World", wxOK|wxICON_INFORMATION);
         else if (event.GetId() == wxID_EXIT) Close(true);
@@ -44,9 +62,16 @@ namespace My
           }
           wxString filePath = fileDialog.GetPath();
           wxLogMessage("Selected file: %s", filePath);
+
+          // wxMessageDialog dialog(nullptr, "ÎÄ¼þÒÑ³É¹¦´ò¿ª", "ÎÄ¼þ´ò¿ª", wxOK | wxICON_INFORMATION);
+          // dialog.ShowModal();
+          // ´ò¿ªÐÂ´°¿Ú
+
+          auto newFrame = new wxFrame(this, wxID_ANY, "ÐÂ´°¿Ú", wxDefaultPosition, wxSize(400, 300));
+          newFrame->Show();
+
         }
-        else event.Skip(); 
-      });
+        else event.Skip(); });
     }
   };
 
@@ -60,4 +85,4 @@ namespace My
   };
 }
 
-wxIMPLEMENT_APP(My::Application);
+wxIMPLEMENT_APP(MyTools::Application);

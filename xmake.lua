@@ -4,8 +4,9 @@ add_requires("wxwidgets", { configs = { shared = true } })
 
 target("my-tools")
     set_kind("binary")
-    add_files("src/*.cpp")
-    set_languages("c++14")
+    add_files("src/**.cpp")
+    add_includedirs("src/themes/my", "src/components/pack")
+    set_languages("c++17")
     add_packages("wxwidgets")
 
 --
