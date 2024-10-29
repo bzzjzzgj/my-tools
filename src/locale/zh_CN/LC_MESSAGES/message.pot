@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 17:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ui.cpp:23 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:23
+msgid "Basic Info"
+msgstr ""
+
+#: ui.cpp:28 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:28
+msgid "Code"
+msgstr ""
+
+#: ui.cpp:41 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:41
+msgid "Name"
+msgstr ""
+
+#: ui.cpp:54 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:54
+msgid "Icon"
+msgstr ""
+
+#: ui.cpp:67 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:67
+msgid "Desc"
+msgstr ""
+
+#: ui.cpp:77 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:77
+msgid "Save"
+msgstr ""
+
+#: ui.cpp:84 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:84
+msgid "Pack Content"
+msgstr ""
+
+#: ui.cpp:109 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:109
+msgid "Add"
+msgstr ""
+
+#: ui.cpp:112 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:112
+msgid "Delete"
+msgstr ""
+
+#: ui.cpp:137 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:137
+msgid "Open"
+msgstr ""
+
+#: ui.cpp:144 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:144
+msgid "File"
+msgstr ""
+
+#: ui.cpp:147 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:147
+msgid "About"
+msgstr ""
+
+#: ui.cpp:150 D:\Workspace\Git\Bzz\my-tools\src\components\ui\ui.cpp:150
+msgid "MyMenu"
+msgstr ""

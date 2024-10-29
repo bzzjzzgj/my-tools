@@ -1,0 +1,70 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# U-DESKTOP-SN5ASC2\ChengQi <ChengQi@desktop-sn5asc2>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 17:04+0800\n"
+"PO-Revision-Date: 2024-10-29 17:10+0800\n"
+"Last-Translator: U-DESKTOP-SN5ASC2\\ChengQi <ChengQi@desktop-sn5asc2>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ui.cpp:23
+msgid "Basic Info"
+msgstr "基础信息"
+
+#: ui.cpp:28
+msgid "Code"
+msgstr "编码"
+
+#: ui.cpp:41
+msgid "Name"
+msgstr "名称"
+
+#: ui.cpp:54
+msgid "Icon"
+msgstr "图标"
+
+#: ui.cpp:67
+msgid "Desc"
+msgstr "描述"
+
+#: ui.cpp:77
+msgid "Save"
+msgstr "保存"
+
+#: ui.cpp:84
+msgid "Pack Content"
+msgstr ""
+
+#: ui.cpp:109
+msgid "Add"
+msgstr "添加"
+
+#: ui.cpp:112
+msgid "Delete"
+msgstr "删除"
+
+#: ui.cpp:137
+msgid "Open"
+msgstr "打开"
+
+#: ui.cpp:144
+msgid "File"
+msgstr "文件"
+
+#: ui.cpp:147
+msgid "About"
+msgstr "关于"
+
+#: ui.cpp:150
+msgid "MyMenu"
+msgstr "我的菜单"

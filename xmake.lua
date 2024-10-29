@@ -1,13 +1,33 @@
+
 add_rules("mode.debug", "mode.release")
 
-add_requires("wxwidgets", { configs = { shared = true } })
+add_requires("wxwidgets", { configs = { shared = true, runtimes = "MT" } })
+
+-- add_defines("UNICODE", "_UNICODE")
 
 target("my-tools")
     set_kind("binary")
     add_files("src/**.cpp")
-    add_includedirs("src/themes/my", "src/components/pack", "src/core")
+    add_includedirs("src/themes/my", "src/components/pack", "src/core", "src/components/ui","src/frames")
     set_languages("c++17")
     add_packages("wxwidgets")
+
+if is_plat("windows") then
+    -- add_cxflags("/utf-8")
+    -- add_cxflags("/D_UNICODE");
+else
+    add_cxflags("-finput-charset=UTF-8", "-fexec-charset=UTF-8")
+end
+
+    before_build(function (target)
+        os.exec("powershell -Command \"Get-ChildItem -Recurse -Filter '*.cpp' | ForEach-Object { & xgettext --from-code=UTF-8 --keyword=_ -L C++ -j -o src/locale/zh_CN/LC_MESSAGES/message.pot $_.FullName }\"")
+    end)
+
+    after_build(function (target)
+        os.cp("src/locale", path.join(target:targetdir(), "locale"))
+    end)
+
+
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
