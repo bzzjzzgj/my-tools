@@ -25,6 +25,7 @@
 #include <wx/statbox.h>
 #include <wx/panel.h>
 #include <wx/dataview.h>
+#include <wx/statbmp.h>
 #include <wx/menu.h>
 #include <wx/frame.h>
 
@@ -78,6 +79,31 @@ class PackListPanelUI : public wxPanel
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+/// Class PackIconPanelUI
+///////////////////////////////////////////////////////////////////////////////
+class PackIconPanelUI : public wxPanel
+{
+	private:
+
+	protected:
+		wxStaticBitmap* m_bitmap1;
+		wxStaticBitmap* m_bitmap2;
+		wxStaticBitmap* m_bitmap3;
+		wxStaticBitmap* m_bitmap4;
+		wxStaticBitmap* m_bitmap5;
+		wxStaticBitmap* m_bitmap6;
+		wxStaticBitmap* m_bitmap7;
+		wxStaticBitmap* m_bitmap8;
+
+	public:
+
+		PackIconPanelUI( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
+
+		~PackIconPanelUI();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
 /// Class MainFrameUI
 ///////////////////////////////////////////////////////////////////////////////
 class MainFrameUI : public wxFrame
@@ -89,7 +115,6 @@ class MainFrameUI : public wxFrame
 		wxMenu* m_fileMenu;
 		wxMenu* m_openMenu;
 		wxMenu* m_aboutMenu;
-		wxMenu* m_menu4;
 
 	public:
 

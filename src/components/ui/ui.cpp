@@ -127,6 +127,44 @@ PackListPanelUI::~PackListPanelUI()
 {
 }
 
+PackIconPanelUI::PackIconPanelUI( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name ) : wxPanel( parent, id, pos, size, style, name )
+{
+	wxGridSizer* mainGridSizer;
+	mainGridSizer = new wxGridSizer( 5, 10, 0, 0 );
+
+	m_bitmap1 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap1, 0, wxALL, 5 );
+
+	m_bitmap2 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap2, 0, wxALL, 5 );
+
+	m_bitmap3 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap3, 0, wxALL, 5 );
+
+	m_bitmap4 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap4, 0, wxALL, 5 );
+
+	m_bitmap5 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap5, 0, wxALL, 5 );
+
+	m_bitmap6 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap6, 0, wxALL, 5 );
+
+	m_bitmap7 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap7, 0, wxALL, 5 );
+
+	m_bitmap8 = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	mainGridSizer->Add( m_bitmap8, 0, wxALL, 5 );
+
+
+	this->SetSizer( mainGridSizer );
+	this->Layout();
+}
+
+PackIconPanelUI::~PackIconPanelUI()
+{
+}
+
 MainFrameUI::MainFrameUI( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -141,13 +179,14 @@ MainFrameUI::MainFrameUI( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_fileMenu->Append( m_openMenuItem );
 
+	wxMenuItem* m_menuItem1;
+	m_menuItem1 = new wxMenuItem( m_fileMenu, wxID_ANY, wxString( _("Exit") ) , wxEmptyString, wxITEM_NORMAL );
+	m_fileMenu->Append( m_menuItem1 );
+
 	m_menubar->Append( m_fileMenu, _("File") );
 
 	m_aboutMenu = new wxMenu();
 	m_menubar->Append( m_aboutMenu, _("About") );
-
-	m_menu4 = new wxMenu();
-	m_menubar->Append( m_menu4, _("MyMenu") );
 
 	this->SetMenuBar( m_menubar );
 

@@ -1,30 +1,44 @@
 
 add_rules("mode.debug", "mode.release")
 
-add_requires("wxwidgets", { configs = { shared = true, runtimes = "MT" } })
-
--- add_defines("UNICODE", "_UNICODE")
+add_requires("wxwidgets", { configs = { shared = true } })
 
 target("my-tools")
     set_kind("binary")
     add_files("src/**.cpp")
-    add_includedirs("src/themes/my", "src/components/pack", "src/core", "src/components/ui","src/frames")
+    add_includedirs("src/themes/my", "src/components/pack", "src/components/ui","src/frames")
     set_languages("c++17")
     add_packages("wxwidgets")
 
-if is_plat("windows") then
-    -- add_cxflags("/utf-8")
-    -- add_cxflags("/D_UNICODE");
-else
-    add_cxflags("-finput-charset=UTF-8", "-fexec-charset=UTF-8")
-end
-
     before_build(function (target)
-        os.exec("powershell -Command \"Get-ChildItem -Recurse -Filter '*.cpp' | ForEach-Object { & xgettext --from-code=UTF-8 --keyword=_ -L C++ -j -o src/locale/zh_CN/LC_MESSAGES/message.pot $_.FullName }\"")
+        local cpps = target:sourcefiles()
+        local command = "xgettext --from-code=UTF-8 --keyword=_ -o ./src/locale/zh_CN/LC_MESSAGES/message.pot -L C++ "
+     
+        -- 生成 pot 文件
+        for _, file in ipairs(cpps) do
+            command = command .. " " .. file .. " "
+
+            if not file:endswith("main.cpp") then
+                command = command .. " " .. string.gsub(file, "%.cpp$", ".h")
+            end
+        end
+        os.exec(command)
+
+        -- 生成 po 文件
+        command = "msgmerge --update ./src/locale/zh_CN/LC_MESSAGES/message.po ./src/locale/zh_CN/LC_MESSAGES/message.pot"
+        os.exec(command)
+
+        -- 生成 mo 文件
+        command = "msgfmt ./src/locale/zh_CN/LC_MESSAGES/message.po -o ./src/locale/zh_CN/LC_MESSAGES/message.mo"
+        os.exec(command)
     end)
 
     after_build(function (target)
         os.cp("src/locale", path.join(target:targetdir(), "locale"))
+    end)
+
+    on_clean(function (target) 
+        os.rm(path.join(target:targetdir(), "locale"))
     end)
 
 
