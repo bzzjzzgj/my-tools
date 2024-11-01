@@ -1,13 +1,16 @@
 
 add_rules("mode.debug", "mode.release")
 
-add_requires("wxwidgets", { configs = { shared = true } })
+
+add_requires("wxwidgets", { configs = { shared = true, runtimes = "MD" } })
+
+set_languages("c++20")
 
 target("my-tools")
     set_kind("binary")
     add_files("src/**.cpp")
     add_includedirs("src/themes/my", "src/components/pack", "src/components/ui","src/frames")
-    set_languages("c++17")
+    
     add_packages("wxwidgets")
 
     before_build(function (target)
@@ -40,6 +43,12 @@ target("my-tools")
     on_clean(function (target) 
         os.rm(path.join(target:targetdir(), "locale"))
     end)
+
+if is_plat("windows") then
+    add_cxflags("/utf-8")
+end
+
+
 
 
 
