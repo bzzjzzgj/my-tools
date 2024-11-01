@@ -1,32 +1,50 @@
 #include "pack_list_view_model.h"
+#include <wx/log.h>
 
-PackListViewModel::PackListViewModel() {}
+PackListViewModel::PackListViewModel()
+{
+    m_pRoot = new PackListViewModelNode(nullptr, _("Data Overview"));
+    m_pDataSet1 = new PackListViewModelNode(m_pRoot, _("Data Set #1"));
 
-PackListViewModel::~PackListViewModel() {}
+    PackListViewModelNode *nodeDataSet1 = new PackListViewModelNode(m_pRoot, 455, "A data set", "describes", "informaton to a end");
+    m_pDataSet1->Append(nodeDataSet1);
+
+    m_pRoot->Append(m_pDataSet1);
+
+    m_pDataSet2 = new PackListViewModelNode(m_pRoot, _("Data Set #2"));
+    m_pRoot->Append(m_pDataSet2);
+}
+
+PackListViewModel::~PackListViewModel()
+{
+    delete m_pRoot;
+}
 
 void PackListViewModel::GetValue(wxVariant &variant,
                                  const wxDataViewItem &item,
                                  unsigned int col) const
 {
-    // 获取行号
-    unsigned int row = reinterpret_cast<uintptr_t>(item.GetID());
 
-    // 检查行号是否在数据项范围内
-    if (row >= m_dataItems.size())
-    {
-        return;
-    }
+    wxASSERT(item.IsOk());
 
-    // 根据列号获取不同的值
+    PackListViewModelNode *node = (PackListViewModelNode *)item.GetID();
     switch (col)
     {
-    case 0:
-        variant = m_dataItems[row].GetName();
+    case Col_Code:
+        variant = node->GetCode();
         break;
-    case 1:
-        variant = m_dataItems[row].GetCode();
+    case Col_Name:
+        variant = node->GetName();
         break;
+    case Col_Path:
+        variant = node->GetPath();
+        break;
+    case Col_Id:
+        variant = (long)node->GetId();
+        break;
+    case Col_Max:
     default:
+        wxLogError("PackListViewModel::GetValue: wrong column %d", col);
         break;
     }
 }
@@ -35,97 +53,199 @@ bool PackListViewModel::SetValue(const wxVariant &variant,
                                  const wxDataViewItem &item,
                                  unsigned int col)
 {
-    // 获取行号
-    unsigned int row = reinterpret_cast<uintptr_t>(item.GetID());
+    wxASSERT(item.IsOk());
 
-    // 检查行号是否在数据项范围内
-    if (row >= m_dataItems.size())
-    {
-        return false;
-    }
+    PackListViewModelNode *node = (PackListViewModelNode *)item.GetID();
 
-    // 根据列号设置不同的值
     switch (col)
     {
-    case 0:
-        m_dataItems[row].SetName(variant.GetString());
+    case Col_Code:
+        node->SetCode(variant.GetString());
         break;
-    case 1:
-        m_dataItems[row].SetCode(variant.GetString());
+    case Col_Name:
+        node->SetName(variant.GetString());
         break;
+    case Col_Path:
+        node->SetPath(variant.GetString());
+        break;
+    case Col_Id:
+        node->SetId(variant.GetInteger());
+        break;
+    case Col_Max:
     default:
-        return false;
+        wxLogError("PackListViewModel::GetValue: wrong column %d", col);
+        break;
     }
 
-    // 通知视图数据已更改
-    ItemChanged(item);
-    return true;
+    return false;
 }
 
 wxDataViewItem PackListViewModel::GetParent(const wxDataViewItem &item) const
 {
-    // 在这个模型中，所有项目都没有父项，因此返回无效项
-    return wxDataViewItem();
+    if (!item.IsOk())
+        return wxDataViewItem(0);
+
+    PackListViewModelNode *node = (PackListViewModelNode *)item.GetID();
+
+    if (node == m_pRoot)
+    {
+        return wxDataViewItem(0);
+    }
+
+    return wxDataViewItem((void *)node->GetParent());
 }
 
 bool PackListViewModel::IsContainer(const wxDataViewItem &item) const
 {
-    // 只有不可见的（和无效的）根项目有子项目
-    return !item.IsOk();
-}
-
-unsigned int PackListViewModel::GetChildren(const wxDataViewItem &item, wxDataViewItemArray &children) const
-{
-    // 如果项目无效，则返回所有顶级项目
     if (!item.IsOk())
     {
-        for (unsigned int i = 0; i < m_dataItems.size(); ++i)
-        {
-            children.Add(wxDataViewItem(reinterpret_cast<void *>(static_cast<uintptr_t>(i))));
-        }
-        return m_dataItems.size();
+        return true;
     }
-    // 否则，返回 0，因为此模型不支持嵌套
-    return 0;
+
+    PackListViewModelNode *node = (PackListViewModelNode *)item.GetID();
+    return node->IsContainer();
 }
 
-unsigned int PackListViewModel::GetCount() const
+unsigned int PackListViewModel::GetChildren(const wxDataViewItem &parent, wxDataViewItemArray &array) const
 {
-    return m_dataItems.size();
-}
-
-void PackListViewModel::AddItem(const PackListDataItem &item)
-{
-    m_dataItems.push_back(item);
-    wxDataViewItem dataItem(reinterpret_cast<void *>(m_dataItems.size() - 1));
-    ItemAdded(wxDataViewItem(nullptr), dataItem);
-}
-
-bool PackListViewModel::RemoveItem(unsigned int index)
-{
-    if (index >= m_dataItems.size())
+    PackListViewModelNode *node = (PackListViewModelNode *)parent.GetID();
+    if (!node)
     {
-        return false;
+        array.Add(wxDataViewItem((void *)m_pRoot));
     }
-    wxDataViewItem dataItem(reinterpret_cast<void *>(static_cast<uintptr_t>(index)));
-    ItemDeleted(wxDataViewItem(nullptr), dataItem);
-    m_dataItems.erase(m_dataItems.begin() + index);
-    return true;
-}
 
-const PackListDataItem &PackListViewModel::GetItem(unsigned int index) const
-{
-    return m_dataItems.at(index);
-}
-
-bool PackListViewModel::UpdateItem(unsigned int index, const PackListDataItem &item)
-{
-    if (index >= m_dataItems.size())
+    if (node->GetChildCount() == 0)
     {
-        return false; 
+        return 0;
     }
-    m_dataItems[index] = item;
-    wxDataViewItem dataItem(reinterpret_cast<void *>(static_cast<uintptr_t>(index)));
-    ItemChanged(dataItem);
-    return true;
+
+    unsigned int count = node->GetChildren().GetCount();
+    for (unsigned int pos = 0; pos < count; pos++)
+    {
+        PackListViewModelNode *child = node->GetChildren().Item(pos);
+        array.Add(wxDataViewItem((void *)child));
+    }
+
+    return count;
+}
+
+unsigned int PackListViewModel::GetColumnCount() const
+{
+    return Col_Max;
+}
+
+wxString PackListViewModel::GetColumnType(unsigned int col) const
+{
+    if (col == Col_Id)
+    {
+        return "long";
+    }
+    else
+    {
+        return "string";
+    }
+}
+
+PackListViewModelNode::PackListViewModelNode(PackListViewModelNode *parent,
+                                             int id,
+                                             const wxString &name,
+                                             const wxString &code,
+                                             const wxString &path)
+    : m_parent(parent),
+      m_id(id),
+      m_code(code),
+      m_path(path),
+      m_bContainer(false)
+{
+}
+
+PackListViewModelNode::PackListViewModelNode(PackListViewModelNode *parent, const wxString &branch)
+    : m_parent(parent),
+      m_code(branch), m_bContainer(true)
+{
+}
+
+PackListViewModelNode::~PackListViewModelNode()
+{
+    std::size_t count = m_children.GetCount();
+    for (std::size_t i = 0; i < count; i++)
+    {
+        PackListViewModelNode *child = m_children[i];
+        delete child;
+    }
+}
+
+bool PackListViewModelNode::IsContainer() const
+{
+    return m_bContainer;
+}
+
+PackListViewModelNode *PackListViewModelNode::GetParent()
+{
+    return m_parent;
+}
+
+PackListViewModelNodePtrArry &PackListViewModelNode::GetChildren()
+{
+    return m_children;
+}
+
+PackListViewModelNode *PackListViewModelNode::GetNthChild(unsigned int n)
+{
+    return m_children.Item(n);
+}
+
+void PackListViewModelNode::Insert(PackListViewModelNode *child, unsigned int n)
+{
+    m_children.Insert(child, n);
+}
+
+void PackListViewModelNode::Append(PackListViewModelNode *child)
+{
+    m_children.Add(child);
+}
+
+int PackListViewModelNode::GetId() const
+{
+    return m_id;
+}
+
+wxString PackListViewModelNode::GetCode() const
+{
+    return m_code;
+}
+
+wxString PackListViewModelNode::GetName() const
+{
+    return m_name;
+}
+
+wxString PackListViewModelNode::GetPath() const
+{
+    return m_path;
+}
+
+void PackListViewModelNode::SetId(int value)
+{
+    m_id = value;
+}
+
+void PackListViewModelNode::SetCode(const wxString &value)
+{
+    m_code = value;
+}
+
+void PackListViewModelNode::SetName(const wxString &value)
+{
+    m_name = value;
+}
+
+void PackListViewModelNode::SetPath(const wxString &value)
+{
+    m_path = value;
+}
+
+const unsigned int PackListViewModelNode::GetChildCount() const
+{
+    return m_children.Count();
 }

@@ -2,7 +2,7 @@
 add_rules("mode.debug", "mode.release")
 
 
-add_requires("wxwidgets", { configs = { shared = true, runtimes = "MD" } })
+add_requires("wxwidgets", { configs = { shared = true, runtimes = "MD", debug = true } })
 
 set_languages("c++20")
 

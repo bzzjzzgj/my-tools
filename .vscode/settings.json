@@ -78,6 +78,13 @@
         "*.tcc": "cpp",
         "memory_resource": "cpp",
         "string_view": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "bitset": "cpp",
+        "__bit_reference": "cpp",
+        "__config": "cpp",
+        "__node_handle": "cpp",
+        "__verbose_abort": "cpp"
     }
 }

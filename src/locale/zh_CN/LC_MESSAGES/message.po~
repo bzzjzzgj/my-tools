@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-29 23:13+0800\n"
+"POT-Creation-Date: 2024-11-01 23:58+0800\n"
 "PO-Revision-Date: 2024-10-29 17:10+0800\n"
 "Last-Translator: U-DESKTOP-SN5ASC2\\ChengQi <ChengQi@desktop-sn5asc2>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -59,7 +59,7 @@ msgstr "打开"
 
 #: src/components/ui/ui.cpp:183
 msgid "Exit"
-msgstr ""
+msgstr "退出"
 
 #: src/components/ui/ui.cpp:186
 msgid "File"
