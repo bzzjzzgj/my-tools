@@ -1,11 +1,38 @@
 #include <iostream>
-
 #include <imgui.h>
+#include <iconv.h>
 #include "pack_list.h"
 
-AsktaoPackList::AsktaoPackList(/* args */)
+AsktaoPackList::AsktaoPackList(bool &show_main_menu_bar)
+    : m_show(true), show_main_menu_bar(show_main_menu_bar)
 {
-    m_data = ReadFileToVector("D:\\gs\\etc.pak\\charge_item.list");
+    m_data = ReadFileToVector("./test/charge_item.list");
+}
+
+std::string AsktaoPackList::ConvertGBKToUTF8(const std::string &gbkStr)
+{
+    iconv_t cd = iconv_open("UTF-8", "GBK");
+    if (cd == (iconv_t)-1)
+    {
+        perror("iconv_open");
+        return "";
+    }
+
+    size_t inBytesLeft = gbkStr.size();
+    size_t outBytesLeft = inBytesLeft * 2; // UTF-8 may require more space
+    std::vector<char> outBuf(outBytesLeft);
+    char *inBuf = const_cast<char *>(gbkStr.data());
+    char *outPtr = outBuf.data();
+
+    if (iconv(cd, &inBuf, &inBytesLeft, &outPtr, &outBytesLeft) == (size_t)-1)
+    {
+        perror("iconv");
+        iconv_close(cd);
+        return "";
+    }
+
+    iconv_close(cd);
+    return std::string(outBuf.data(), outBuf.size() - outBytesLeft);
 }
 
 std::vector<std::string> AsktaoPackList::ReadFileToVector(const std::string &filePath)
@@ -15,12 +42,13 @@ std::vector<std::string> AsktaoPackList::ReadFileToVector(const std::string &fil
 
     if (file.is_open())
     {
-        std::string line;
-        while (std::getline(file, line))
+        std::string gbk_line;
+        while (std::getline(file, gbk_line))
         {
 
-            if (!line.empty() && line[0] != '#')
+            if (!gbk_line.empty() && gbk_line[0] != '#')
             {
+                std::string line = ConvertGBKToUTF8(gbk_line);
 
                 size_t pos = 0;
                 while ((pos = line.find(", ")) != std::string::npos)
@@ -88,31 +116,36 @@ AsktaoPackList::~AsktaoPackList()
 
 void AsktaoPackList::Show()
 {
-    bool show = true;
-    ImGui::Begin("礼包", &show);
-    ImGui::SetWindowSize(ImVec2(800, 500));
+    if (!m_show)
+    {
+        show_main_menu_bar = true;
+        return;
+    }
+
+    show_main_menu_bar = false;
+
+    ImGui::Begin("礼包", &m_show);
 
     const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
-    static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+    static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
     ImVec2 outer_size = ImVec2(0.0f, 0.0f);
 
-    int selected_row = -1;
+    static ImVector<std::string> selection;
 
     if (ImGui::BeginChild("resizable", ImVec2(0.0f, 0.0f), true))
     {
         if (ImGui::BeginMainMenuBar())
         {
-            if (ImGui::BeginMenu("File"))
+            if (ImGui::BeginMenu("礼包工具"))
             {
-                if (ImGui::MenuItem("Open", "Ctrl+O"))
+                if (ImGui::MenuItem("设置 etc 目录", "Ctrl+O"))
                 { /* Do something */
                 }
-                if (ImGui::MenuItem("Save", "Ctrl+S"))
+
+                if (ImGui::MenuItem("设置 gs 目录", "Ctrl+O"))
                 { /* Do something */
                 }
-                if (ImGui::MenuItem("Close", "Ctrl+W"))
-                { /* Do something */
-                }
+
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -120,6 +153,7 @@ void AsktaoPackList::Show()
 
         if (ImGui::BeginTable("asktao_list", 8, flags, outer_size))
         {
+
             ImGui::TableSetupScrollFreeze(0, 1);
 
             ImGui::TableSetupColumn("名称", ImGuiTableColumnFlags_WidthFixed, 100.0f); // 设置列宽度为100
@@ -136,18 +170,38 @@ void AsktaoPackList::Show()
             {
 
                 PackItem *item = m_pack_items[i];
+                ImGui::PushID(item->path.c_str());
+                const bool row_is_selected = selection.contains(item->path);
+
                 ImGui::TableNextRow();
 
-                // 行背景颜色
-                // if (selected_row == i)
-                // {
-                //     ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg0, ImGui::GetColorU32(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]));
-                // }
+                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
 
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", item->name.c_str());
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%s", item->path.c_str());
+
+                if (ImGui::Selectable(item->name.c_str(), row_is_selected, selectable_flags))
+                {
+
+                    if (ImGui::GetIO().KeyCtrl)
+                    {
+                        if (row_is_selected)
+                        {
+                            selection.find_erase_unsorted(item->path);
+                        }
+                        else
+                        {
+                            selection.push_back(item->path);
+                        }
+                    }
+                    else
+                    {
+                        selection.clear();
+                        selection.push_back(item->path);
+                    }
+                }
+
                 ImGui::TableSetColumnIndex(2);
                 ImGui::Text("%s", item->color.c_str());
                 ImGui::TableSetColumnIndex(3);
@@ -161,13 +215,7 @@ void AsktaoPackList::Show()
                 ImGui::TableSetColumnIndex(7);
                 ImGui::Text("%s", item->description.c_str());
 
-
-                
-
-                // if (ImGui::IsItemClicked())
-                // {
-                //     selected_row = i;
-                // }
+                ImGui::PopID();
             }
 
             ImGui::EndTable();

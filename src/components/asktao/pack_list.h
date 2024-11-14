@@ -21,21 +21,34 @@ struct PackItem
     std::string description;
 };
 
+struct Item
+{
+    std::string name;
+    int value;
+    bool active;
+};
+
 class AsktaoPackList
 {
 private:
     std::vector<std::string> ReadFileToVector(const std::string &filePath);
+    std::string ConvertGBKToUTF8(const std::string &gbkStr);
 
 public:
-    AsktaoPackList(/* args */);
+    AsktaoPackList(bool &show_main_menu_bar);
     ~AsktaoPackList();
 
     void Show();
     void ShowEdit();
 
+public:
+    bool m_show;
+
 private:
     std::vector<std::string> m_data;
     std::vector<PackItem *> m_pack_items;
+
+    bool &show_main_menu_bar;
 };
 
 #endif
