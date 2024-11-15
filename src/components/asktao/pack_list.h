@@ -7,18 +7,19 @@
 
 struct PackItem
 {
-    std::string name;
-    std::string path;
-    std::string color;
+    char name[256];
+    char path[256];
+    char color[256];
     int has_c_file;
     int icon;
-    std::string unit;
+    char unit[256];
     int no_float;
-    int combined;
+    bool combined;
     int price;
     int reputation;
     int item_task;
-    std::string description;
+    char description[1024 * 2];
+    char code[1024 * 2];
 };
 
 struct Item
@@ -38,8 +39,18 @@ public:
     AsktaoPackList(bool &show_main_menu_bar);
     ~AsktaoPackList();
 
-    void Show();
+    void Show()
+    {
+        InitMainMenu();
+        ShowList();
+        ShowEdit();
+    };
+
+    void ShowList();
     void ShowEdit();
+    void Delete();
+
+    void InitMainMenu();
 
 public:
     bool m_show;
@@ -47,8 +58,14 @@ public:
 private:
     std::vector<std::string> m_data;
     std::vector<PackItem *> m_pack_items;
+    ImVector<char *> m_selection;
 
     bool &show_main_menu_bar;
+    bool m_show_edit;
+
+    // 菜单状态控制
+    bool m_show_menu_bar;
+    bool m_edit_disable;
 };
 
 #endif

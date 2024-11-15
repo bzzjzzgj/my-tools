@@ -71,7 +71,7 @@ int main(int, char **)
 #endif
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(1280, 720, "我的工具箱", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -121,6 +121,7 @@ int main(int, char **)
     // Our state
     bool show_demo_window = false;
     bool show_another_window = false;
+    bool show_hello = false;
     bool show_main_menu = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -154,22 +155,32 @@ int main(int, char **)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        // 自己代码
         {
             if (show_main_menu)
             {
                 if (ImGui::BeginMainMenuBar())
                 {
-                    if (ImGui::BeginMenu("File"))
+
+                    if (ImGui::BeginMenu("我的工具箱"))
                     {
-                        if (ImGui::MenuItem("礼包", "Ctrl+O"))
+                        if (ImGui::MenuItem("退出", "Ctrl+Q"))
+                        {
+                            glfwSetWindowShouldClose(window, GLFW_TRUE);
+                        }
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::BeginMenu("其他工具"))
+                    {
+                        if (ImGui::MenuItem("礼包编辑器", "Ctrl+P"))
                         {
                             asktao_pack_list.m_show = true;
                         }
-                        if (ImGui::MenuItem("Save", "Ctrl+S"))
-                        { /* Do something */
-                        }
-                        if (ImGui::MenuItem("Close", "Ctrl+W"))
-                        { /* Do something */
+
+                        if (ImGui::MenuItem("示例", "Ctrl+S"))
+                        {
+                            show_hello = true;
                         }
                         ImGui::EndMenu();
                     }
@@ -178,7 +189,6 @@ int main(int, char **)
             }
 
             asktao_pack_list.Show();
-            asktao_pack_list.ShowEdit();
         }
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -186,11 +196,12 @@ int main(int, char **)
             ImGui::ShowDemoWindow(&show_demo_window);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        if (show_hello)
         {
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("Hello, world!", &show_hello); // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
